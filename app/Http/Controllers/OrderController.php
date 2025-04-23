@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Order;
+use Illuminate\Support\Facades\Validator;
+
+class OrderController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreOrderRequest $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'comment' => 'required|max:255',
+            'order_name' => 'required'
+        ]);
+ 
+        if ($validator->fails()) {
+            $error = $validator->errors()->first();
+            $er = ["status" => "error", "error" => $error];
+            return $er;
+        } else {
+            $order = [
+                "name" => $request->order_name,
+                "product" => $request->product_id,
+                "comment" => $request->comment
+            ];
+            Order::create($order);            
+            return ["status" => "ok"];
+        } 
+        
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Order $order)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Order $order)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateOrderRequest $request, Order $order)
+    {
+        $product = Order::where('id', $request->id)->get();
+
+        $product->toQuery()->update([
+            "status" => $request->status
+        ]);
+
+        $o = Order::where('id', $request->id)->get();
+
+        return ["status" => "ok", "product" => $o[0]];
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(UpdateOrderRequest $request, Order $o)
+    {            
+        $id = $request->id;
+        $o = Order::where('id', $id);        
+        $o->delete();        
+        return ["status" => "ok", "id" => $id];
+    }
+}
