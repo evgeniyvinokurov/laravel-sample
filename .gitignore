@@ -12,6 +12,7 @@
 .phpactor.json
 .phpunit.result.cache
 Homestead.json
+package-lock.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log

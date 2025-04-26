@@ -6,14 +6,17 @@
 
         <meta name="csrf-token" content="{{ csrf_token() }}" />
         <title>Laravel</title>
-        @vite('resources/js/app.js')
+        @vite('resources/js/app.js')    
+        @vite('resources/css/app.css')
 
     </head>    
-    <body class="orders">
-        <h1><a href="/product/all">Products</a>&nbsp;Orders</h1>
+    <body class="orders m-20">
+        <h1><a href="/product/all">Products</a>&nbsp;<span class="font-semibold m-10">Orders</span></h1>
         <input type="hidden"  class="id"></input>
+
         <div class="orders-view"></div>
-        <div class="one-order-view hide">
+
+        <div class="one-order-view hide m-20 border-2 border-solid p-2">
             <div class="id"></div>
             <div class="created_at"></div>
             <div class="name"></div>
