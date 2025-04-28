@@ -11,7 +11,7 @@
 
     </head>    
     <body class="orders m-20">
-        <h1><a href="/product/all">Products</a>&nbsp;<span class="font-semibold m-10">Orders</span></h1>
+        <h1><a href="/">Products</a>&nbsp;<span class="font-semibold m-10">Orders</span></h1>
         <input type="hidden"  class="id"></input>
 
         <div class="orders-view"></div>

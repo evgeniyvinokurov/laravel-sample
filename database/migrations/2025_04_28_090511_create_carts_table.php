@@ -15,15 +15,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             
-            $table->string("name");
-            $table->string("status");
-            $table->string("comment");
-
             $table->integer("product");
             $table->foreign('product')->references('id')->on('products');
 
-            $table->integer("users");
-            $table->foreign('users')->references('id')->on('users');
+            $table->integer("user");
+            $table->foreign('user')->references('id')->on('users');
         });
     }
 

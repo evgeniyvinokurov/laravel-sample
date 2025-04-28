@@ -4,17 +4,50 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Requests\IndexRequest;
+
 use App\Models\Product;
+use App\Models\User;
+use App\Models\Category;
+
+use Illuminate\Support\Facades\Hash;
+
 use Illuminate\Support\Facades\Validator;
+
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Http\FormRequest;
+
+use Symfony\Component\HttpFoundation\Session\Session;
+
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = Auth::user();
+
+        if (empty($user))    
+        {
+            $user = new User();    
+            $user->password = Hash::make('the-password-of-choice');
+            $user->email = rand(5, 1556).'the-email@example.com';
+            $user->name = 'My Name';
+            $user->save();
+
+            Auth::loginUsingId($user->id);
+        }
+            
+        $categories = Category::all();
+        return view('products', ["categories" => $categories]);
+    }
+
+    public function all(FormRequest $request) {
+        $products = Product::all();
+        return ["status" => "ok", "products" => $products];
     }
 
     /**

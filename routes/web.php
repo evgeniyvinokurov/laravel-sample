@@ -3,26 +3,25 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\CartController;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Category;
+use App\Models\User;
 
-Route::get('/', function () {
-    return view('welcome');
-});
  
 Route::get('/greeting', function () {
     return 'Hello World';
 });
 
-Route::get('/product/all', function () {
-    $categories = Category::all();
-    return view('products', ["categories" => $categories]);
-});
+Route::get('/', [ProductController::class, 'index']);
 
 Route::get('/order/all', function () {
     return view('orders');
 });
+
+Route::post('/cart/add', [CartController::class, 'create']);
 
 Route::post('/order/all', function () {
     $orders = Order::all();    
@@ -52,10 +51,7 @@ Route::post('/order/all', function () {
     return ["status" => "ok", "orders" => $ordersWithNames];
 });
 
-Route::post('/product/all', function () {
-    $products = Product::all();
-    return ["status" => "ok", "products" => $products];
-});
+Route::post('/product/all', [ProductController::class, 'all']);
 
 Route::post('/product/create', [ProductController::class, 'store']);
 Route::post('/product/delete', [ProductController::class, 'destroy']);

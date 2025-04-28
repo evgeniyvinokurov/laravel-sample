@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     let makeProduct = function(obj){
-        return "<div id='p" + obj.id + "' class='product new' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + "</div>";
+        return "<div id='p" + obj.id + "' class='product new' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + "<span class='add m-2'>add</span></div>";
     }
 
     let makeAllProducts = function(objs){
@@ -74,6 +74,26 @@ document.addEventListener("DOMContentLoaded", function(){
                 createOrderEl.classList.remove("hide");
 
                 createEl.classList.add("hide");
+            });
+        }
+
+        let productsAddEls = document.querySelectorAll(".products-view .product .add");
+        for (let p of productsAddEls) {
+            p.addEventListener("click", function(e){ 
+                e.preventDefault();
+                e.stopPropagation();
+
+                let product = JSON.parse(unescape(this.parentElement.attributes["data-src"].value));
+
+                let fdata = new FormData();                
+                fdata.append("product", product["id"]);
+
+                doAjaxPost("/cart/add", fdata, function(data){
+                    if (data.status == "ok") {
+                        console.log("ok");
+                    }
+                })   
+
             });
         }
     }
