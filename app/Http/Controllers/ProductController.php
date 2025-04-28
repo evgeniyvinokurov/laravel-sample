@@ -76,7 +76,7 @@ class ProductController extends Controller
                 "price" => $request->price,
                 "category" => $request->category
             ];
-            Product::create($product);
+            $product = Product::create($product);
             return ["status" => "ok", "product" => $product];
         } 
         
