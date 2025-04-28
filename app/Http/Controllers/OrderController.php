@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreOrderRequest;
-use App\Http\Requests\UpdateOrderRequest;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Http\FormRequest;
+
 use App\Models\Order;
 use Illuminate\Support\Facades\Validator;
 
@@ -28,7 +29,7 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreOrderRequest $request)
+    public function store(FormRequest $request)
     {
         $validator = Validator::make($request->all(), [
             'comment' => 'required|max:255',
@@ -70,7 +71,7 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateOrderRequest $request, Order $order)
+    public function update(FormRequest $request, Order $order)
     {
         $product = Order::where('id', $request->id)->get();
 
@@ -86,7 +87,7 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UpdateOrderRequest $request, Order $o)
+    public function destroy(FormRequest $request, Order $o)
     {            
         $id = $request->id;
         $o = Order::where('id', $id);        

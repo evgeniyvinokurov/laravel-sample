@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
-use App\Http\Requests\IndexRequest;
-
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
@@ -17,7 +13,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
-use Symfony\Component\HttpFoundation\Session\Session;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -61,7 +56,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(FormRequest $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
@@ -106,7 +101,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(FormRequest $request, Product $product)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
@@ -138,7 +133,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UpdateProductRequest $request, Product $product)
+    public function destroy(FormRequest $request, Product $product)
     {        
         $id = $request->id;
         $p = Product::where('id', $id);        

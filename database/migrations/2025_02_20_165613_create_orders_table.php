@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('carts', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             
@@ -20,10 +20,7 @@ return new class extends Migration
             $table->string("comment");
 
             $table->integer("product");
-            $table->foreign('product')->references('id')->on('products');
-
-            $table->integer("users");
-            $table->foreign('users')->references('id')->on('users');
+            $table->foreign('product')->references('id')->on('products')->onDelete('cascade');
         });
     }
 
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('carts');
+        Schema::dropIfExists('orders');
     }
 };

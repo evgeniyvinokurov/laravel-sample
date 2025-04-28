@@ -16,10 +16,10 @@ return new class extends Migration
             $table->timestamps();
             
             $table->integer("product");
-            $table->foreign('product')->references('id')->on('products');
+            $table->foreign('product')->references('id')->on('products')->onDelete('cascade');
 
             $table->integer("user");
-            $table->foreign('user')->references('id')->on('users');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

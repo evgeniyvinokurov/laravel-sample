@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer("category");
             $table->timestamps();
 
-            $table->foreign('category')->references('id')->on('categories');
+            $table->foreign('category')->references('id')->on('categories')->onDelete('cascade');
         });
     }
 
