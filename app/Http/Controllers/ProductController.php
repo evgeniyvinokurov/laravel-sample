@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Cart;
 
 use Illuminate\Support\Facades\Hash;
 
@@ -41,8 +42,19 @@ class ProductController extends Controller
     }
 
     public function all(FormRequest $request) {
+        $user = Auth::user();
+        $pids = [];
+
+        $carts = Cart::where('user', $user->id)->get();
+
+        foreach($carts as $c) {
+            $pids[] = $c->product;
+        }       
+
+        $productsCart = Product::whereIn('id', $pids)->get();        
+
         $products = Product::all();
-        return ["status" => "ok", "products" => $products];
+        return ["status" => "ok", "products" => $products, "cart"=> $productsCart];
     }
 
     /**

@@ -31,15 +31,19 @@
             </div>
         </div>
 
-        <div class="products-view"></div>
+        <div class="products-view m-2"></div>
+
+        <label for="cart-view m-2" class="label-cart">Cart</label>
+        <div id="cart-view m-2" class="cart-view"></div>
+
         <div class="message hide"></div>
         
-        <div class="make-order-container">
+        <div class="make-order-container mt-10">
             <h2 class="make-order-title hide">Make order</h2>
 
             <input type="text"  class="order-name-text hide" placeHolder="person name"></input>
             <input type="text"  class="comment-text hide" placeHolder="comment"></input>
-            <input type="submit" value="order" class="order-create-btn hide"></input>
+            <input type="submit" value="order" class="order-create-btn hide cursor-pointer"></input>
         </div>
         <style>
             .product {

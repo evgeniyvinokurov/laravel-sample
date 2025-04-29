@@ -28,8 +28,19 @@ class CartController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
+    {        
+        $user = Auth::user();
+        $pids = [];
+
+        $carts = Cart::where('user', $user->id)->get();
+
+        foreach($carts as $c) {
+            $pids[] = $c->product;
+        }       
+
+        $productsCart = Product::whereIn('id', $pids)->get();        
+
+        return ["status" => "ok", "cart"=> $productsCart];
     }
 
     /**
@@ -42,7 +53,7 @@ class CartController extends Controller
         $cart = new Cart();        
         
         $cart->user = $user->id;
-        $cart->product = $request->product_id;
+        $cart->product = $request->product;
 
         $cart->save();
         return ["status" => "ok"];
@@ -84,8 +95,25 @@ class CartController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
-    {
-        //
+    public function destroy(FormRequest $request)
+    {        
+        $user = Auth::user();
+        
+        $cartDelete = Cart::where([['product', $request->product], ['user', $user->id]]);
+
+        if ($cartDelete)
+            $cartDelete->delete();
+
+        $pids = [];
+
+        $carts = Cart::where('user', $user->id)->get();
+
+        foreach($carts as $c) {
+            $pids[] = $c->product;
+        }       
+
+        $productsCart = Product::whereIn('id', $pids)->get();        
+
+        return ["status" => "ok", "cart"=> $productsCart];    
     }
 }

@@ -23,6 +23,10 @@ Route::get('/order/all', function () {
 
 Route::post('/cart/add', [CartController::class, 'create']);
 
+Route::post('/cart/remove', [CartController::class, 'destroy']);
+
+Route::post('/cart', [CartController::class, 'index']);
+
 Route::post('/order/all', function () {
     $orders = Order::all();    
     $ids = [];

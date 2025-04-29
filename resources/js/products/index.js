@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", function(){
     let idEl = document.querySelector(".id");
 
     let productsEl = document.querySelector(".products-view");
+    let cartEl = document.querySelector(".cart-view");
+    let cartLabelEl = document.querySelector(".label-cart");
 
     let doAjaxPost = function(url, data, cb){
         var xhttp = new XMLHttpRequest();
@@ -42,6 +44,10 @@ document.addEventListener("DOMContentLoaded", function(){
         return "<div id='p" + obj.id + "' class='product new' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + "<span class='add m-2'>add</span></div>";
     }
 
+    let makeProductCart = function(obj){
+        return "<div id='p" + obj.id + "' class='product-cart new' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + "<span class='border-2 border-solid cursor-pointer p-1 remove m-2'>remove</span></div>";
+    }
+
     let makeAllProducts = function(objs){
         productsEl.innerHTML = "";
 
@@ -49,6 +55,38 @@ document.addEventListener("DOMContentLoaded", function(){
             productsEl.innerHTML = productsEl.innerHTML + makeProduct(i);
         
         initProductEvents();
+    }
+
+    let makeCart = function(objs){
+        cartEl.innerHTML = "";
+
+        for (let i of objs)
+            cartEl.innerHTML = cartEl.innerHTML + makeProductCart(i);
+
+        if (objs.length > 0) {
+            showOrder();
+            cartLabelEl.classList.remove("hide");
+        } else {
+            hideOrder();
+            cartLabelEl.classList.add("hide");
+        }
+
+        initCartEvents();
+    
+    }
+
+    let showOrder = function(){
+        makeOrderTitleEl.classList.remove("hide");
+        orderNameEl.classList.remove("hide");                        
+        commentEl.classList.remove("hide");
+        createOrderEl.classList.remove("hide");
+    }
+
+    let hideOrder = function() {
+        makeOrderTitleEl.classList.add("hide");
+        orderNameEl.classList.add("hide");                        
+        commentEl.classList.add("hide");
+        createOrderEl.classList.add("hide");        
     }
 
     let initProductEvents = function(){
@@ -67,12 +105,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 cancelEl.classList.remove("hide");
                 deleteEl.classList.remove("hide");
 
-                makeOrderTitleEl.classList.remove("hide");
-
-                orderNameEl.classList.remove("hide");                        
-                commentEl.classList.remove("hide");
-                createOrderEl.classList.remove("hide");
-
                 createEl.classList.add("hide");
             });
         }
@@ -90,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
                 doAjaxPost("/cart/add", fdata, function(data){
                     if (data.status == "ok") {
-                        console.log("ok");
+                        showCart();
                     }
                 })   
 
@@ -98,12 +130,49 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
 
+    let initCartEvents = function(){
+        let productsRemoveEls = document.querySelectorAll(".cart-view .product-cart .remove");
+        for (let p of productsRemoveEls) {
+            p.addEventListener("click", function(e){ 
+                e.preventDefault();
+                e.stopPropagation();
+
+                let product = JSON.parse(unescape(this.parentElement.attributes["data-src"].value));
+
+                let fdata = new FormData();                
+                fdata.append("product", product["id"]);
+
+                doAjaxPost("/cart/remove", fdata, function(data){
+                    if (data.status == "ok") {
+                        makeCart(data.cart);
+                    }
+                })   
+
+            });
+        }
+    }
+
+    let showCart = function(){
+        let fdata = new FormData();
+
+        doAjaxPost("/cart/", fdata, function(data){
+            if (data.status = "ok"){
+                makeCart(data.cart);
+            }
+        })
+    }
+
+    let hideCart = function(){
+        makeCart([]);          
+    }
+
     let init = function(){
         let fdata = new FormData();
 
         doAjaxPost("/product/all", fdata, function(data){
             if (data.status == "ok") {
-                makeAllProducts(data.products);                        
+                makeAllProducts(data.products);    
+                makeCart(data.cart);                    
             }
         })   
     }
@@ -155,7 +224,6 @@ document.addEventListener("DOMContentLoaded", function(){
         let idfororder = idEl.value;
 
         let fdata = new FormData();
-        fdata.append("product_id", idfororder);
         fdata.append("order_name", orderNameEl.value);
         fdata.append("comment", commentEl.value);
 
@@ -173,6 +241,8 @@ document.addEventListener("DOMContentLoaded", function(){
                     makeOrderTitleEl.classList.add("hide");
                     commentEl.value = "";
                     orderNameEl.value = "";
+
+                    hideCart();
                 }, 2000)
             } else {
                 messageEl.innerHTML = "Ошибка";

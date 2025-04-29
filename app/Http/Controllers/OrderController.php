@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 use App\Models\Order;
+use App\Models\Cart;
+use App\Models\Product;
+
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -41,12 +45,25 @@ class OrderController extends Controller
             $er = ["status" => "error", "error" => $error];
             return $er;
         } else {
-            $order = [
-                "name" => $request->order_name,
-                "product" => $request->product_id,
-                "comment" => $request->comment
-            ];
-            Order::create($order);            
+            $user = Auth::user();
+            $pids = [];
+    
+            $carts = Cart::where('user', $user->id)->get();        
+    
+            foreach($carts as $c) {
+                $order = [
+                    "name" => $request->order_name,
+                    "product" => $c->product,
+                    "comment" => $request->comment
+                ];
+                Order::create($order);         
+                
+                $cartDelete = Cart::where([['product', $c->product], ['user', $user->id]]);
+
+                if ($cartDelete)
+                    $cartDelete->delete();
+            }
+            
             return ["status" => "ok"];
         } 
         
