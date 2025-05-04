@@ -11,52 +11,16 @@ use App\Models\Category;
 use App\Models\User;
 
  
-Route::get('/greeting', function () {
-    return 'Hello World';
-});
-
 Route::get('/', [ProductController::class, 'index']);
 
-Route::get('/order/all', function () {
-    return view('orders');
-});
-
 Route::post('/cart/add', [CartController::class, 'create']);
-
 Route::post('/cart/remove', [CartController::class, 'destroy']);
-
 Route::post('/cart', [CartController::class, 'index']);
 
-Route::post('/order/all', function () {
-    $orders = Order::all();    
-    $ids = [];
-    
-    foreach($orders as $o) {
-        $ids[] = $o["product"];    
-    }
-
-    $products = Product::whereIn('id', $ids)->get();
-    $productkeys = [];
-    foreach($products as $p){
-        $productkeys[$p->id] = $p;
-    }
-
-    $ordersWithNames = [];
-
-    foreach($orders as $o){
-        $item = $o;
-
-        $item["product_name"] = $productkeys[$o["product"]]["name"];
-        $item["product_price"] = $productkeys[$o["product"]]["price"];
-
-        $ordersWithNames[] = $item;
-    }
-
-    return ["status" => "ok", "orders" => $ordersWithNames];
-});
+Route::get('/order/all', [OrderController::class, 'index']);
+Route::post('/order/all', [OrderController::class, 'all']);
 
 Route::post('/product/all', [ProductController::class, 'all']);
-
 Route::post('/product/create', [ProductController::class, 'store']);
 Route::post('/product/delete', [ProductController::class, 'destroy']);
 Route::post('/product/update', [ProductController::class, 'update']);

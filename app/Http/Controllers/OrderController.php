@@ -19,7 +19,35 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return view('orders');
+    }
+
+    public function all(){
+        $orders = Order::all();    
+        $ids = [];
+        
+        foreach($orders as $o) {
+            $ids[] = $o["product"];    
+        }
+
+        $products = Product::whereIn('id', $ids)->get();
+        $productkeys = [];
+        foreach($products as $p){
+            $productkeys[$p->id] = $p;
+        }
+
+        $ordersWithNames = [];
+
+        foreach($orders as $o){
+            $item = $o;
+
+            $item["product_name"] = $productkeys[$o["product"]]["name"];
+            $item["product_price"] = $productkeys[$o["product"]]["price"];
+
+            $ordersWithNames[] = $item;
+        }
+
+        return ["status" => "ok", "orders" => $ordersWithNames];
     }
 
     /**
