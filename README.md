@@ -1,6 +1,6 @@
-# laravel-sample v0.0.1
+# laravel-sample v0.0.2
   
-* main page - /product/all  
-* orders page - /order/all  
+* main page - /  
+* orders page - /order/all   
   
-Used laravel with docker and sail
+Used laravel with docker and sail  
