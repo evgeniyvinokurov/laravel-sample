@@ -11,7 +11,8 @@
     <body class="products m-20">
         <h1><span class="font-semibold">Products</span>&nbsp<a class="m-10" href="/order/all">Orders</a></h1>
 
-        <div class="product-selected grid w-60 m-10 border-2 border-solid p-2">
+        <label for="product-view" class="label-product">Product =></label>
+        <div id="product-view" class="hide product-selected grid w-60 m-10 border-2 border-solid p-2">
             <input type="text" placeHolder="name" class="name-text"></input>
             <input type="hidden"  class="id"></input>
             <input type="text" placeHolder="description"  class="description-text"></input>
