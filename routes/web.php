@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\CartController;
@@ -28,3 +29,8 @@ Route::post('/product/update', [ProductController::class, 'update']);
 Route::post('/order/create', [OrderController::class, 'store']);
 Route::post('/order/delete', [OrderController::class, 'destroy']);
 Route::post('/order/update', [OrderController::class, 'update']);
+
+
+Route::post('/api/registration', [ApiController::class, 'registration']);
+Route::get('/api/profile', [ApiController::class, 'profile']);
+Route::get('/api/logout', [ApiController::class, 'logout']);
