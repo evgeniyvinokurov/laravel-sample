@@ -32,6 +32,7 @@ class ProductController extends Controller
             $user->password = Hash::make('the-password-of-choice');
             $user->email = rand(5, 1556).'the-email@example.com';
             $user->name = 'My Name';
+            $user->gender = 1;
             $user->save();
 
             Auth::loginUsingId($user->id);
