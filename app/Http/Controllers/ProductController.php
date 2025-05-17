@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Gender;
 use App\Models\Cart;
 
 use Illuminate\Support\Facades\Hash;
@@ -28,11 +29,13 @@ class ProductController extends Controller
 
         if (empty($user))    
         {
+            $genders = Gender::All();
+
             $user = new User();    
             $user->password = Hash::make('the-password-of-choice');
             $user->email = rand(5, 1556).'the-email@example.com';
             $user->name = 'My Name';
-            $user->gender = 1;
+            $user->gender = $genders[0]->id;
             $user->save();
 
             Auth::loginUsingId($user->id);
