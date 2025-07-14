@@ -9,8 +9,9 @@
         @vite('resources/css/app.css')
     </head>    
     <body class="products m-20">
-        <h1><span class="font-semibold">Products</span>&nbsp<a class="m-10" href="/order/all">Orders</a></h1>
+        @include('menu')
 
+        @if ($user !== False)
         <label for="product-view" class="label-product">Product =></label>
         <div id="product-view" class="hide product-selected grid w-60 m-10 border-2 border-solid p-2">
             <input type="text" placeHolder="name" class="name-text"></input>
@@ -31,9 +32,12 @@
                 <input type="submit" value="delete" class="delete-btn border-2 border-solid cursor-pointer p-1 hide"></input>
             </div>
         </div>
+        @endif
 
         <div class="products-view m-2"></div>
 
+
+        @if ($user !== False)
         <label for="cart-view m-2" class="label-cart">Cart</label>
         <div id="cart-view m-2" class="cart-view"></div>
 
@@ -46,6 +50,7 @@
             <input type="text"  class="comment-text hide" placeHolder="comment"></input>
             <input type="submit" value="order" class="order-create-btn hide cursor-pointer"></input>
         </div>
+        @endif
         <style>
             .product {
                 display: inline-block;

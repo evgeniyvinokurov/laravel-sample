@@ -1,7 +1,9 @@
 
+console.log("test 0");
 document.addEventListener("DOMContentLoaded", function(){
     if (!document.querySelector(".products"))
         return false;
+    console.log("test 1");
 
     let createEl = document.querySelector(".create-btn");
     let updateEl = document.querySelector(".update-btn");
@@ -171,6 +173,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     let init = function(){
+        console.log("test 2");
         let fdata = new FormData();
 
         doAjaxPost("/product/all", fdata, function(data){
@@ -181,132 +184,139 @@ document.addEventListener("DOMContentLoaded", function(){
         })   
     }
 
-    lblProduct.addEventListener("click", function(e){  
-        selectedProduct.classList.toggle("hide");
-    })
+    if (lblProduct)
+        lblProduct.addEventListener("click", function(e){  
+            selectedProduct.classList.toggle("hide");
+        })
 
-    cancelEl.addEventListener("click", function(e){ 
-        updateEl.classList.add("hide");
-        cancelEl.classList.add("hide");
-        deleteEl.classList.add("hide");
-        createOrderEl.classList.add("hide");
-        commentEl.classList.add("hide");
-        orderNameEl.classList.add("hide");
-        makeOrderTitleEl.classList.add("hide");
-        createEl.classList.remove("hide");
-        selectedProduct.classList.add("hide");
+    if (cancelEl)
+        cancelEl.addEventListener("click", function(e){ 
+            updateEl.classList.add("hide");
+            cancelEl.classList.add("hide");
+            deleteEl.classList.add("hide");
+            createOrderEl.classList.add("hide");
+            commentEl.classList.add("hide");
+            orderNameEl.classList.add("hide");
+            makeOrderTitleEl.classList.add("hide");
+            createEl.classList.remove("hide");
+            selectedProduct.classList.add("hide");
 
-        priceEl.value = "";
-        nameEl.value = "";
-        descriptionEl.value = "";
-        categoryEl.value = "";
-        idEl.value = "";
-    })
+            priceEl.value = "";
+            nameEl.value = "";
+            descriptionEl.value = "";
+            categoryEl.value = "";
+            idEl.value = "";
+        })
 
-    createEl.addEventListener("click", function(e){
-        let fdata = new FormData();
-        fdata.append("price", priceEl.value);
-        fdata.append("description", descriptionEl.value);
-        fdata.append("name", nameEl.value);
-        fdata.append("category", categoryEl.value);
+    if (createEl)
+        createEl.addEventListener("click", function(e){
+            let fdata = new FormData();
+            fdata.append("price", priceEl.value);
+            fdata.append("description", descriptionEl.value);
+            fdata.append("name", nameEl.value);
+            fdata.append("category", categoryEl.value);
 
-        doAjaxPost("/product/create", fdata, function(data){
-            if (data.status == "ok") {
-                productsEl.innerHTML = productsEl.innerHTML + makeProduct(data.product);
-                priceEl.value = "";
-                descriptionEl.value = "";
-                nameEl.value = "";
-                initProductEvents();
-            } else {
-                messageEl.innerHTML = "Ошибка " + data.error;
-                messageEl.classList.remove("hide");
+            doAjaxPost("/product/create", fdata, function(data){
+                if (data.status == "ok") {
+                    productsEl.innerHTML = productsEl.innerHTML + makeProduct(data.product);
+                    priceEl.value = "";
+                    descriptionEl.value = "";
+                    nameEl.value = "";
+                    initProductEvents();
+                } else {
+                    messageEl.innerHTML = "Ошибка " + data.error;
+                    messageEl.classList.remove("hide");
 
-                setTimeout(function(){
-                    messageEl.innerHTML = "";
-                    messageEl.classList.add("hide");
-                }, 2000)
-            }
-        })            
-    });
+                    setTimeout(function(){
+                        messageEl.innerHTML = "";
+                        messageEl.classList.add("hide");
+                    }, 2000)
+                }
+            })            
+        });
 
-    createOrderEl.addEventListener("click", function(e){                
-        let idfororder = idEl.value;
 
-        let fdata = new FormData();
-        fdata.append("order_name", orderNameEl.value);
-        fdata.append("comment", commentEl.value);
+    if (createOrderEl)
+        createOrderEl.addEventListener("click", function(e){                
+            let idfororder = idEl.value;
 
-        doAjaxPost("/order/create", fdata, function(data){
-            if (data.status == "ok") {
-                messageEl.innerHTML = "Заказ создан";
-                messageEl.classList.remove("hide");
+            let fdata = new FormData();
+            fdata.append("order_name", orderNameEl.value);
+            fdata.append("comment", commentEl.value);
 
-                setTimeout(function(){
-                    messageEl.innerHTML = "";
-                    messageEl.classList.add("hide");
-                    createOrderEl.classList.add("hide");
-                    commentEl.classList.add("hide");
-                    orderNameEl.classList.add("hide");
-                    makeOrderTitleEl.classList.add("hide");
-                    commentEl.value = "";
-                    orderNameEl.value = "";
+            doAjaxPost("/order/create", fdata, function(data){
+                if (data.status == "ok") {
+                    messageEl.innerHTML = "Заказ создан";
+                    messageEl.classList.remove("hide");
 
-                    hideCart();
-                }, 2000)
-            } else {
-                messageEl.innerHTML = "Ошибка";
-                messageEl.classList.remove("hide");
+                    setTimeout(function(){
+                        messageEl.innerHTML = "";
+                        messageEl.classList.add("hide");
+                        createOrderEl.classList.add("hide");
+                        commentEl.classList.add("hide");
+                        orderNameEl.classList.add("hide");
+                        makeOrderTitleEl.classList.add("hide");
+                        commentEl.value = "";
+                        orderNameEl.value = "";
 
-                setTimeout(function(){
-                    messageEl.innerHTML = "";
-                    messageEl.classList.add("hide");
-                }, 2000)
-            }
-        })            
-    });
+                        hideCart();
+                    }, 2000)
+                } else {
+                    messageEl.innerHTML = "Ошибка";
+                    messageEl.classList.remove("hide");
 
-    updateEl.addEventListener("click", function(e){
-        let idforeupdate = idEl.value;
+                    setTimeout(function(){
+                        messageEl.innerHTML = "";
+                        messageEl.classList.add("hide");
+                    }, 2000)
+                }
+            })            
+        });
 
-        let fdata = new FormData();
-        fdata.append("id", idforeupdate);
-        fdata.append("price", priceEl.value);
-        fdata.append("description", descriptionEl.value);
-        fdata.append("name", nameEl.value);
-        fdata.append("category", categoryEl.value);             
+    if (updateEl)
+        updateEl.addEventListener("click", function(e){
+            let idforeupdate = idEl.value;
 
-        doAjaxPost("/product/update", fdata, function(data){
-            if (data.status == "ok") {
-                let el = document.querySelector("#p" + idforeupdate);
-                el.remove();
+            let fdata = new FormData();
+            fdata.append("id", idforeupdate);
+            fdata.append("price", priceEl.value);
+            fdata.append("description", descriptionEl.value);
+            fdata.append("name", nameEl.value);
+            fdata.append("category", categoryEl.value);             
 
-                productsEl.innerHTML = productsEl.innerHTML + makeProduct(data.product);
-                initProductEvents();
-            } else {
-                messageEl.innerHTML = "Ошибка " + data.error;
-                messageEl.classList.remove("hide");
+            doAjaxPost("/product/update", fdata, function(data){
+                if (data.status == "ok") {
+                    let el = document.querySelector("#p" + idforeupdate);
+                    el.remove();
 
-                setTimeout(function(){
-                    messageEl.innerHTML = "";
-                    messageEl.classList.add("hide");
-                }, 2000)
-            }
-        })            
-    });
+                    productsEl.innerHTML = productsEl.innerHTML + makeProduct(data.product);
+                    initProductEvents();
+                } else {
+                    messageEl.innerHTML = "Ошибка " + data.error;
+                    messageEl.classList.remove("hide");
 
-    deleteEl.addEventListener("click", function(e){
-        let idforedelete = idEl.value;
+                    setTimeout(function(){
+                        messageEl.innerHTML = "";
+                        messageEl.classList.add("hide");
+                    }, 2000)
+                }
+            })            
+        });
 
-        let fdata = new FormData();
-        fdata.append("id", idforedelete);
+    if (deleteEl)
+        deleteEl.addEventListener("click", function(e){
+            let idforedelete = idEl.value;
 
-        doAjaxPost("/product/delete", fdata, function(data){
-            if (data.status == "ok") {
-                let el = document.querySelector("#p" + idforedelete);
-                el.remove();
-            }
-        })            
-    });
+            let fdata = new FormData();
+            fdata.append("id", idforedelete);
+
+            doAjaxPost("/product/delete", fdata, function(data){
+                if (data.status == "ok") {
+                    let el = document.querySelector("#p" + idforedelete);
+                    el.remove();
+                }
+            })            
+        });
 
     init();
 

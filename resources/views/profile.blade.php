@@ -10,22 +10,29 @@
         @vite('resources/css/app.css')
 
     </head>    
-    <body class="orders m-20">
+    <body class="profile m-20">
         @include('menu')
-        <input type="hidden"  class="id"></input>
 
-        <div class="orders-view"></div>
-
-        <div class="one-order-view hide m-20 border-2 border-solid p-2">
-            <div class="id"></div>
-            <div class="created_at"></div>
-            <div class="name"></div>
-            <div class="status"><select data-id=""><option value="выполнен">выполнен</option><option value='новый'>новый</option></select></div>
-            <div class="comment"></div>
-            <div class="product_name"></div>
-            <div class="product_price"></div>
-        </div>
+        <h3>login</h3>
+        <form>
+            <input name="email" type="email"></input>
+            <input name="password" type="password"></input>
+            <input type="submit" value="send"></input>
+            <span class="error"></span>
+        </form>
+        <a class="logout" href="/user/logout">logout</a>
+        
         <style>
+            input {
+                border: 2px solid grey;
+                padding: 2px;
+            }
+
+            .logout, .error {
+                display: block;
+                padding: 10px;
+            }
+
             .hide {
                 display: none;
             }

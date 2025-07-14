@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Gender;
 use App\Models\Cart;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Hash;
 
@@ -16,52 +17,40 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 
-use Illuminate\Support\Facades\Auth;
-
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
+    {            
         $user = Auth::user();
-
-        if (empty($user))    
-        {
-            $genders = Gender::All();
-
-            $user = new User();    
-            $user->password = Hash::make('the-password-of-choice');
-            $user->email = rand(5, 1556).'the-email@example.com';
-            $user->name = 'My Name';
-            $user->gender = $genders[0]->id;
-            $user->save();
-
-            Auth::loginUsingId($user->id);
+        if (empty($user)){
+            $user = False;
         }
-            
         $categories = Category::all();
-        return view('products', ["categories" => $categories]);
+        return view('products', ["categories" => $categories, "user" => $user] );
     }
 
     public function all(FormRequest $request) {
         $user = Auth::user();
         $pids = [];
 
-        $carts = Cart::where('user', $user->id)->get();
-
-        foreach($carts as $c) {
-            $pids[] = $c->product;
-        }       
-
-        $productsCart = Product::whereIn('id', $pids)->get();        
+        if (!empty($user)) {
+            $carts = Cart::where('user', $user->id)->get();
+            foreach($carts as $c) {
+                $pids[] = $c->product;
+            }                   
+            $productsCart = Product::whereIn('id', $pids)->get();        
+        } else {
+            $productsCart = [];
+        }
 
         $products = Product::all();
         return ["status" => "ok", "products" => $products, "cart"=> $productsCart];
     }
 
-    /**
+    /**$user
      * Show the form for creating a new resource.
      */
     public function create()

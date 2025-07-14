@@ -18,8 +18,35 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 
-class ApiController extends Controller
+class UserController extends Controller
 {
+    public function user(Request $request)
+    {   
+        $user = Auth::user();
+
+        if (empty($user))    
+        {
+            $user = ["email" => "guest"];
+        }
+            
+        return view('profile', ["user" => $user]);
+    }        
+        
+    public function login(Request $request)
+    {        
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]); 
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return ["status" => "ok"];
+        } else {
+            $er = ["status" => "error", "error" => "Ошибка"];
+            return $er;
+        } 
+    }  
     public function registration(Request $request)
     {        
         $validator = Validator::make($request->all(), [
@@ -45,6 +72,7 @@ class ApiController extends Controller
             return ["status" => "ok", "user" => $user];
         } 
     }
+
     public function profile(Request $request)
     {        
         $user = Auth::user();
