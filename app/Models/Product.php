@@ -21,7 +21,7 @@ class Product extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'description', 'price', 'category'];
+    protected $fillable = ['name', 'description', 'price', 'category', 'quantity'];
     
     public function category(): HasMany
     {

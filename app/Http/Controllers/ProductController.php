@@ -42,12 +42,14 @@ class ProductController extends Controller
                 $pids[] = $c->product;
             }                   
             $productsCart = Product::whereIn('id', $pids)->get();        
+            $isAuth = TRUE;
         } else {
             $productsCart = [];
+            $isAuth = FALSE;
         }
 
-        $products = Product::all();
-        return ["status" => "ok", "products" => $products, "cart"=> $productsCart];
+        $products = Product::all();        
+        return ["status" => "ok", "products" => $products, "cart"=> $productsCart, "auth"=> $isAuth];
     }
 
     /**$user

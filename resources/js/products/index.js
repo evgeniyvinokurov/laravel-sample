@@ -1,9 +1,6 @@
-
-console.log("test 0");
 document.addEventListener("DOMContentLoaded", function(){
     if (!document.querySelector(".products"))
         return false;
-    console.log("test 1");
 
     let createEl = document.querySelector(".create-btn");
     let updateEl = document.querySelector(".update-btn");
@@ -29,6 +26,8 @@ document.addEventListener("DOMContentLoaded", function(){
     let lblProduct  = document.querySelector(".label-product");
     let selectedProduct  = document.querySelector(".product-selected");
 
+    let isAuth = false;
+
     let doAjaxPost = function(url, data, cb){
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -46,7 +45,12 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     let makeProduct = function(obj){
-        return "<div id='p" + obj.id + "' class='product new min-w-64' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + "<span class='add m-2 float-right'>add</span></div>";
+        let addhtml = "<span class='add m-2 float-right'>add</span>";
+        if (!isAuth){            
+            addhtml = "";
+            console.log(false, isAuth)
+        }
+        return "<div id='p" + obj.id + "' class='product new min-w-64' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + addhtml + "</div>";
     }
 
     let makeProductCart = function(obj){
@@ -63,10 +67,12 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     let makeCart = function(objs){
-        cartEl.innerHTML = "";
+        if (cartEl)
+            cartEl.innerHTML = "";
 
-        for (let i of objs)
-            cartEl.innerHTML = cartEl.innerHTML + makeProductCart(i);
+        if (cartEl)
+            for (let i of objs)
+                cartEl.innerHTML = cartEl.innerHTML + makeProductCart(i);
 
         if (objs.length > 0) {
             showOrder();
@@ -88,10 +94,17 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     let hideOrder = function() {
-        makeOrderTitleEl.classList.add("hide");
-        orderNameEl.classList.add("hide");                        
-        commentEl.classList.add("hide");
-        createOrderEl.classList.add("hide");        
+        if (makeOrderTitleEl)
+            makeOrderTitleEl.classList.add("hide");
+
+        if (orderNameEl)
+            orderNameEl.classList.add("hide");                        
+        
+        if(commentEl)
+            commentEl.classList.add("hide");
+
+        if (createOrderEl)
+            createOrderEl.classList.add("hide");        
     }
 
     let initProductEvents = function(){
@@ -174,12 +187,16 @@ document.addEventListener("DOMContentLoaded", function(){
 
     let init = function(){
         console.log("test 2");
+
+        isAuth = false;
+
         let fdata = new FormData();
 
         doAjaxPost("/product/all", fdata, function(data){
             if (data.status == "ok") {
+                isAuth = data.auth;   
                 makeAllProducts(data.products);    
-                makeCart(data.cart);                    
+                makeCart(data.cart);               
             }
         })   
     }

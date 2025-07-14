@@ -22,7 +22,7 @@ class Cart extends Model
         *
         * @var array
         */
-       protected $fillable = ['user', 'product'];
+       protected $fillable = ['user', 'product', 'quantity'];
        
        
        public function product(): HasMany
