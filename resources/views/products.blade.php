@@ -11,7 +11,7 @@
     <body class="products m-20">
         @include('menu')
 
-        @if ($user !== False)
+        @if ($user && $user['admin'] === 'Y')
         <label for="product-view" class="label-product">Product =></label>
         <div id="product-view" class="hide product-selected grid w-60 m-10 border-2 border-solid p-2">
             <input type="text" placeHolder="name" class="name-text"></input>
