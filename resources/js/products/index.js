@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     let makeProductCart = function(obj){
-        console.log("test", obj);
+        console.log("test make pc", obj);
         return "<div id='pc" + obj.id + "' class='product-cart new' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + "<input class='quantity' type='number' min='1' value='" + obj["quantity"] + "'></input><span class='border-2 border-solid cursor-pointer p-1 remove m-2'>remove</span></div>";
     }
 
@@ -154,6 +154,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 doAjaxPost("/cart/add", fdata, function(data){
                     if (data.status == "ok") {
                         showCart(function(){
+                            console.log(data, "test quantity");
                             updateQuantity(data.quantity, product["id"]);
                         });
                     }
@@ -210,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let showCart = function(cb){
         let fdata = new FormData();
 
-        doAjaxPost("/cart/", fdata, function(data){
+        doAjaxPost("/cart", fdata, function(data){
             if (data.status = "ok"){
                 makeCart(data.cart);
                 if (cb)

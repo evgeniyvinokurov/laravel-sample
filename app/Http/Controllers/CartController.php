@@ -34,13 +34,24 @@ class CartController extends Controller
 
         $carts = Cart::where('user', $user->id)->get();
 
+        $cartsForDisplay = [];
+        $cartByProduct = [];
+
         foreach($carts as $c) {
-            $pids[] = $c->product;
+            $pids[] = $c->product;            
+            $cartByProduct[$c->product] = $c;
         }       
 
         $productsCart = Product::whereIn('id', $pids)->get();        
+        $products = [];
 
-        return ["status" => "ok", "cart"=> $productsCart];
+        foreach($productsCart as $p) {            
+            $item = $p;
+            $item["quantity"] = $cartByProduct[$p->id]->quantity;
+            $cartsForDisplay[] = $item;
+        }       
+
+        return ["status" => "ok", "cart"=> $cartsForDisplay];
     }
 
     /**
