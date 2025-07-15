@@ -4,9 +4,7 @@
 * orders page - /order/all   
 * profile page - /user  
   
-Used laravel with docker and sail  
-  
-to run:  
-  
-- php artisan migrate  
-- php artisan db:seed --class=DatabaseSeeder  
+to setup:  
+   
+- php artisan migrate:refresh --seed
+
