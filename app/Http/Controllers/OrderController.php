@@ -20,12 +20,19 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return view('orders');
+        return view('orders');              
     }
 
     public function all(){
-        $orders = Order::all();    
+        $user = Auth::user();
+        
+        if ($user->admin === "Y"){
+            $orders = Order::all();  
+        } else {
+            $orders = Order::where(["link" => $user->id])->get();  
+        }  
         $ids = [];
+
         
         foreach($orders as $o) {
             $ids[] = $o["product"];    
@@ -49,7 +56,7 @@ class OrderController extends Controller
             $ordersWithNames[] = $item;
         }
 
-        return ["status" => "ok", "orders" => $ordersWithNames];
+        return ["status" => "ok", "orders" => $ordersWithNames, "admin" => $user->admin];
     }
 
     /**
@@ -124,24 +131,30 @@ class OrderController extends Controller
      * Update the specified resource in storage.
      */
     public function update(FormRequest $request, Order $order)
-    {
-        $user = Auth::user();
-        $order = Order::where('id', $request->id)->first();
+    {        
 
-        $tobeBonuses = $user->bonuses - (floatval($order->quantity) * floatval($order->price));
+        $loggedInUser = Auth::user();
 
-        if ($tobeBonuses > 0 && $request->status == "выполнен") {
-            $order = Order::where(['id' => $request->id])->update([
-                "status" => $request->status            
-            ]);
-            
-            User::where(["id" => $user->id])->update(["bonuses" => $tobeBonuses]);
-            $o = Order::where('id', $request->id)->first();        
-            return ["status" => "ok", "product" => $o];
+        if ($loggedInUser->admin === "Y") {
+            $order = Order::where('id', $request->id)->first();
+            $user = User::where(["id" => $order->link])->first();
 
+            $tobeBonuses = $user->bonuses - (floatval($order->quantity) * floatval($order->price));
+
+            if ($tobeBonuses > 0 && $request->status == "выполнен") {
+                $order = Order::where(['id' => $request->id])->update([
+                    "status" => $request->status            
+                ]);
+                
+                User::where(["id" => $user->id])->update(["bonuses" => $tobeBonuses]);
+                $o = Order::where('id', $request->id)->first();        
+                return ["status" => "ok", "product" => $o];
+
+            } else {
+                return ["status" => "error"];
+            }
         } else {
             return ["status" => "error"];
-                
         }
 
     }

@@ -71,7 +71,8 @@ class UserController extends Controller
                 "name" => $request->email,
                 "gender" => $request->gender,
                 "password" => $request->password,
-                "bonuses" => 1000
+                "bonuses" => 1000,
+                "admin" => "N"
             ];
             $user = User::create($user);
 

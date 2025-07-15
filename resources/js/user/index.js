@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     errorEl.innerHTML = "ok";
                     setTimeout(() => {
                         errorEl.innerHTML = "";
+                        document.querySelector(".userinfo").innerHTML = data.userinfo;
                     }, 2000);
                 } else {
                     errorEl.innerHTML = "Ошибка";
@@ -56,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     errorEl.innerHTML = "ok";
                     setTimeout(() => {
                         errorEl.innerHTML = "";
+                        document.querySelector(".userinfo").innerHTML = "guest, please login!";
                     }, 2000);
                 } else {
                     errorEl.innerHTML = "Ошибка";

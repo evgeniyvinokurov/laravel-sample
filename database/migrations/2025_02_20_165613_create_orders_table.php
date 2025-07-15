@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer("number");
             $table->integer("quantity");
             $table->string("link");
+            $table->foreign('link')->references('id')->on('users')->onDelete('cascade');
             
             $table->string("name");
             $table->string("status");

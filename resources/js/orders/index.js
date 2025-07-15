@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let ordersEl = document.querySelector(".orders-view");
     let oneOrderEl = document.querySelector(".one-order-view");
     let orderStatusSelectEl = document.querySelector(".one-order-view .status select");
+    let isAdmin = false;
 
     let doAjaxPost = function(url, data, cb){
         var xhttp = new XMLHttpRequest();
@@ -23,6 +24,9 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     orderStatusSelectEl.addEventListener("change", function(e){
+        if (!isAdmin)
+            return false;
+        
         let status = this.value;
         let idforeupdate = this.getAttribute("data-id");
 
@@ -105,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function(){
             if (data.status == "ok") {
                 makeAllOrders(data.orders);                        
                 initOrderEvents();
+                isAdmin = data.admin === "Y";
             }
         })                  
     }
