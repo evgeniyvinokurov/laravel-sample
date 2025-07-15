@@ -16,11 +16,12 @@ return new class extends Migration
             $table->string("name");
             $table->string("description");
             $table->float("price");
-            $table->integer("category");
             $table->integer("quantity");
-            $table->timestamps();
 
+            $table->unsignedBigInteger("category");
             $table->foreign('category')->references('id')->on('categories')->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 

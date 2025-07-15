@@ -16,14 +16,14 @@ return new class extends Migration
             $table->timestamps();
             $table->integer("number");
             $table->integer("quantity");
-            $table->string("link");
+            $table->unsignedBigInteger("link");
             $table->foreign('link')->references('id')->on('users')->onDelete('cascade');
             
             $table->string("name");
             $table->string("status");
             $table->string("comment");
 
-            $table->integer("product");
+            $table->unsignedBigInteger("product");
             $table->foreign('product')->references('id')->on('products')->onDelete('cascade');
             $table->float("price");
         });
