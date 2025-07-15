@@ -24,6 +24,7 @@ return new class extends Migration
 
             $table->integer("product");
             $table->foreign('product')->references('id')->on('products')->onDelete('cascade');
+            $table->float("price");
         });
     }
 

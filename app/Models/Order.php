@@ -23,7 +23,7 @@ class Order extends Model
      *
      * @var array
      */
-    protected $fillable = ['number', 'name', 'status', 'comment', "product", "quantity", "link"];
+    protected $fillable = ['number', 'name', 'status', 'comment', "product", "quantity", "link", "price"];
     
     protected $attributes = [
         'status' => 'новый'

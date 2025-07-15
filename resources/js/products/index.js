@@ -299,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function(){
             fdata.append("order_name", orderNameEl.value);
             fdata.append("comment", commentEl.value);
 
-            doAjaxPost("/order/create", fdata, function(data){
+            doAjaxPost("/create-order", fdata, function(data){
                 if (data.status == "ok") {
                     messageEl.innerHTML = "Заказ создан";
                     messageEl.classList.remove("hide");

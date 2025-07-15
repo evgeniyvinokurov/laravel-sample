@@ -20,6 +20,7 @@
             <input type="submit" value="send"></input>
             <span class="error"></span>
         </form>
+        <div class="userinfo">{{ $user['userinfo'] }}</div>
         <a class="logout" href="/user/logout">logout</a>
         
         <style>

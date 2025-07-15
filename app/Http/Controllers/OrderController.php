@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\User;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,8 @@ class OrderController extends Controller
             $item = $o;
 
             $item["product_name"] = $productkeys[$o["product"]]["name"];
-            $item["product_price"] = $productkeys[$o["product"]]["price"];
+            $item["product_price"] = $o["price"];
+            $item["product_total"] = floatval($o["price"]) * floatval($o["quantity"]);
 
             $ordersWithNames[] = $item;
         }
@@ -86,7 +88,8 @@ class OrderController extends Controller
                     "product" => $c->product,
                     "comment" => $request->comment,
                     "quantity" => $c->quantity,
-                    "link" -> $c->user
+                    "link" => $c->user,
+                    "price" => $c->price
                 ];
                 Order::create($order);         
                 
@@ -122,15 +125,25 @@ class OrderController extends Controller
      */
     public function update(FormRequest $request, Order $order)
     {
-        $product = Order::where('id', $request->id)->get();
+        $user = Auth::user();
+        $order = Order::where('id', $request->id)->first();
 
-        $product->toQuery()->update([
-            "status" => $request->status
-        ]);
+        $tobeBonuses = $user->bonuses - (floatval($order->quantity) * floatval($order->price));
 
-        $o = Order::where('id', $request->id)->get();
+        if ($tobeBonuses > 0 && $request->status == "выполнен") {
+            $order = Order::where(['id' => $request->id])->update([
+                "status" => $request->status            
+            ]);
+            
+            User::where(["id" => $user->id])->update(["bonuses" => $tobeBonuses]);
+            $o = Order::where('id', $request->id)->first();        
+            return ["status" => "ok", "product" => $o];
 
-        return ["status" => "ok", "product" => $o[0]];
+        } else {
+            return ["status" => "error"];
+                
+        }
+
     }
 
     /**

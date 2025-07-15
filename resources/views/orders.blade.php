@@ -17,13 +17,15 @@
         <div class="orders-view"></div>
 
         <div class="one-order-view hide m-20 border-2 border-solid p-2">
-            <div class="id"></div>
+            <div class="number"></div>
             <div class="created_at"></div>
             <div class="name"></div>
             <div class="status"><select data-id=""><option value="выполнен">выполнен</option><option value='новый'>новый</option></select></div>
             <div class="comment"></div>
+            <div class="quantity"></div>
             <div class="product_name"></div>
             <div class="product_price"></div>
+            <div class="product_total"></div>
         </div>
         <style>
             .hide {

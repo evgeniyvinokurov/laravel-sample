@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function(){
         fdata.append("id", idforeupdate);
         fdata.append("status", status);
 
-        doAjaxPost("/order/update", fdata, function(data){
+        doAjaxPost("/approve-order", fdata, function(data){
             if (data.status == "ok") {
                 init();
             }
@@ -43,12 +43,14 @@ document.addEventListener("DOMContentLoaded", function(){
             o.addEventListener("click", function(e){ 
                 let order = JSON.parse(unescape(this.attributes["data-src"].value));
 
-                document.querySelector(".one-order-view .id").innerHTML = order["id"];
+                document.querySelector(".one-order-view .number").innerHTML = order["number"];
                 document.querySelector(".one-order-view .name").innerHTML = order["name"];
                 document.querySelector(".one-order-view .created_at").innerHTML = order["created_at"];
                 document.querySelector(".one-order-view .product_name").innerHTML = order["product_name"];
                 document.querySelector(".one-order-view .product_price").innerHTML = order["product_price"];
                 document.querySelector(".one-order-view .comment").innerHTML = order["comment"];
+                document.querySelector(".one-order-view .quantity").innerHTML = order["quantity"];
+                document.querySelector(".one-order-view .product_total").innerHTML = order["product_total"];
                 document.querySelector(".one-order-view .status select").value = order["status"];
 
                 document.querySelector(".one-order-view .status select").setAttribute("data-id", order.id);
@@ -66,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
                 let fdata = new FormData();
                 fdata.append("id", order.id);
-                doAjaxPost("/order/delete", fdata, function(data){
+                doAjaxPost("/delete-order", fdata, function(data){
                     if (data.status == "ok") {
                         let el = document.querySelector("#o" + order.id);
                         el.remove();
@@ -80,12 +82,14 @@ document.addEventListener("DOMContentLoaded", function(){
         let ordersHtml = "<table>";
         for (let order of objs) {
             ordersHtml += "<tr id='o" + order.id + "' class='order' data-src='" + escape(JSON.stringify(order)) + "'>";
-            ordersHtml += "<td>" + order["id"] + "</td>";
+            ordersHtml += "<td>" + order["number"] + "</td>";
             ordersHtml += "<td>" + order["created_at"] + "</td>";
             ordersHtml += "<td>" + order["name"] + "</td>";
             ordersHtml += "<td>" + order["status"] + "</td>";
             ordersHtml += "<td>" + order["comment"] + "</td>";
             ordersHtml += "<td>" + order["product_price"] + "</td>";
+            ordersHtml += "<td>" + order["quantity"] + "</td>";
+            ordersHtml += "<td>" + order["product_total"] + "</td>";
             ordersHtml += "<td class='order-remove'>✕</td>";
             ordersHtml += "</tr>";
         }

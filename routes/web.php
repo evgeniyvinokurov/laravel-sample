@@ -28,9 +28,9 @@ Route::post('/product/create', [ProductController::class, 'store'])->middleware(
 Route::post('/product/delete', [ProductController::class, 'destroy'])->middleware('auth');
 Route::post('/product/update', [ProductController::class, 'update'])->middleware('auth');
 
-Route::post('/order/create', [OrderController::class, 'store'])->middleware('auth');
-Route::post('/order/delete', [OrderController::class, 'destroy'])->middleware('auth');
-Route::post('/order/update', [OrderController::class, 'update'])->middleware('auth');
+Route::post('/create-order', [OrderController::class, 'store'])->middleware('auth');
+Route::post('/approve-order', [OrderController::class, 'update'])->middleware('auth');
+Route::post('/delete-order', [OrderController::class, 'destroy'])->middleware('auth');
 
 
 Route::post('/user/registration', [UserController::class, 'registration']);

@@ -26,7 +26,9 @@ class UserController extends Controller
 
         if (empty($user))    
         {
-            $user = ["email" => "guest"];
+            $user = ["userinfo" => "guest, please login!"];
+        } else {
+            $user = ["userinfo" => "hi, ". $user["email"].", you have: ".$user["bonuses"]. "bonuses!"];
         }
             
         return view('profile', ["user" => $user]);
@@ -41,7 +43,11 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return ["status" => "ok"];
+
+            $user = Auth::user();
+            $userinfo = "hi, ". $user["email"].", you have: ".$user["bonuses"]. "bonuses!";
+
+            return ["status" => "ok", "userinfo" => $userinfo];
         } else {
             $er = ["status" => "error", "error" => "Ошибка"];
             return $er;
@@ -64,7 +70,8 @@ class UserController extends Controller
                 "email" => $request->email,
                 "name" => $request->email,
                 "gender" => $request->gender,
-                "password" => $request->password
+                "password" => $request->password,
+                "bonuses" => 1000
             ];
             $user = User::create($user);
 
