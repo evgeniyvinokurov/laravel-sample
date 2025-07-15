@@ -20,6 +20,9 @@ return new class extends Migration
 
             $table->integer("user");
             $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
+
+            $table->integer("quantity");
+            $table->float("price");
         });
     }
 

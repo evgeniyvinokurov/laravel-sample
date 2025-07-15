@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("description");
             $table->float("price");
             $table->integer("category");
+            $table->integer("quantity");
             $table->timestamps();
 
             $table->foreign('category')->references('id')->on('categories')->onDelete('cascade');

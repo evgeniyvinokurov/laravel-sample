@@ -46,15 +46,17 @@ document.addEventListener("DOMContentLoaded", function(){
 
     let makeProduct = function(obj){
         let addhtml = "<span class='add m-2 float-right'>add</span>";
+        let quantityHtml = "<span class='product-quantity'>" + obj["quantity"] + "</span>";
         if (!isAuth){            
             addhtml = "";
             console.log(false, isAuth)
         }
-        return "<div id='p" + obj.id + "' class='product new min-w-64' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + addhtml + "</div>";
+        return "<div id='p" + obj.id + "' class='product new min-w-64' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + quantityHtml + addhtml + "</div>";
     }
 
     let makeProductCart = function(obj){
-        return "<div id='p" + obj.id + "' class='product-cart new' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + "<span class='border-2 border-solid cursor-pointer p-1 remove m-2'>remove</span></div>";
+        console.log("test", obj);
+        return "<div id='pc" + obj.id + "' class='product-cart new' data-src='" + escape(JSON.stringify(obj)) + "'>" + obj["name"] + "<input class='quantity' type='number' min='1' value='" + obj["quantity"] + "'></input><span class='border-2 border-solid cursor-pointer p-1 remove m-2'>remove</span></div>";
     }
 
     let makeAllProducts = function(objs){
@@ -70,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function(){
         if (cartEl)
             cartEl.innerHTML = "";
 
-        if (cartEl)
+        if (cartEl && objs.length > 0)
             for (let i of objs)
                 cartEl.innerHTML = cartEl.innerHTML + makeProductCart(i);
 
@@ -84,6 +86,16 @@ document.addEventListener("DOMContentLoaded", function(){
 
         initCartEvents();
     
+    }
+
+    let updateQuantity = function(quantityObj, pid){
+        let productEl = document.querySelector("#p"+pid);
+        if (productEl)
+            productEl.querySelector(".product-quantity").innerHTML = quantityObj.pval;
+
+        let productCEl = document.querySelector("#pc"+pid);
+        if (productCEl)
+            productCEl.querySelector(".quantity").value = quantityObj.cval; 
     }
 
     let showOrder = function(){
@@ -141,7 +153,9 @@ document.addEventListener("DOMContentLoaded", function(){
 
                 doAjaxPost("/cart/add", fdata, function(data){
                     if (data.status == "ok") {
-                        showCart();
+                        showCart(function(){
+                            updateQuantity(data.quantity, product["id"]);
+                        });
                     }
                 })   
 
@@ -163,7 +177,29 @@ document.addEventListener("DOMContentLoaded", function(){
 
                 doAjaxPost("/cart/remove", fdata, function(data){
                     if (data.status == "ok") {
+                        updateQuantity(data.quantity, product["id"]);
                         makeCart(data.cart);
+                    }
+                })   
+
+            });
+        }
+
+        let productsQuantityEls = document.querySelectorAll(".cart-view .product-cart input[type='number']");
+        for (let q of productsQuantityEls) {
+            q.addEventListener("change", function(e){ 
+                e.preventDefault();
+                e.stopPropagation();
+
+                let product = JSON.parse(unescape(this.parentElement.attributes["data-src"].value));
+
+                let fdata = new FormData();                
+                fdata.append("product", product["id"]);  
+                fdata.append("quantity", this.value);
+
+                doAjaxPost("/cart/quantity", fdata, function(data){
+                    if (data.status == "ok") {
+                        updateQuantity(data.quantity, product["id"]);
                     }
                 })   
 
@@ -171,12 +207,14 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
 
-    let showCart = function(){
+    let showCart = function(cb){
         let fdata = new FormData();
 
         doAjaxPost("/cart/", fdata, function(data){
             if (data.status = "ok"){
                 makeCart(data.cart);
+                if (cb)
+                    cb();
             }
         })
     }

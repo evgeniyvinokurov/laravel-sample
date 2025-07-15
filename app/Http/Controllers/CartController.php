@@ -48,15 +48,77 @@ class CartController extends Controller
      */
     public function create(FormRequest $request)
     {        
-        $user = Auth::user();
+        $user = Auth::user();     
+        $cart = Cart::where(['product' => $request->product, 'user' => $user->id])->first();
+        $p = Product::where(['id' => intval($request->product)])->first();
 
-        $cart = new Cart();        
+        $quantity = $p->quantity;
         
-        $cart->user = $user->id;
-        $cart->product = $request->product;
+        if ($cart !== null){            
+            if (($quantity + $cart->quantity) > $cart->quantity + 1) {
+                $newQuantity = $quantity - 1;
+                $addedQuantity = $cart->quantity + 1;
+            } else {
+                $addedQuantity = $quantity + $cart->quantity;
+                $newQuantity = 0;
+            }     
 
-        $cart->save();
-        return ["status" => "ok"];
+            Cart::where(["id" => $cart->id])->update(["quantity" => $addedQuantity]);
+            Product::where(["id" => $cart->product])->update(["quantity" => $newQuantity]);
+        } else {            
+            $cart = new Cart();
+
+            $cart->user = $user->id;
+            $cart->product = $request->product;
+            $cart->quantity = 1;
+            $cart->price = $p->price;
+
+            $newQuantity = $quantity - 1;
+            $addedQuantity = 1;            
+
+            Product::where(["id" => $cart->product])->update(["quantity" => $newQuantity]);
+
+            $cart->save();
+        }
+
+        $quantityObj = ["pval" => $newQuantity, "cval" => $addedQuantity];
+
+        return ["status" => "ok", "quantity" => $quantityObj];
+
+    }
+
+    /**
+     * Quantity
+     */
+    public function quantity(FormRequest $request)
+    {        
+        $user = Auth::user();     
+
+        $p = Product::where(['id' => intval($request->product)])->first();
+        $quantity = $p->quantity;
+
+        $cart = Cart::where(['product' => intval($request->product), 'user' => $user->id])->first();
+        
+        // var_dump($request->product);
+        // var_dump($user->id);
+        // var_dump($cart);
+
+        if ($cart !== null){       
+            if ($request->quantity <= ($quantity + $cart->quantity)) {
+                $newQuantity = ($quantity + $cart->quantity) - $request->quantity;
+                $addedQuantity = $request->quantity;
+            } else {
+                $addedQuantity = $quantity + $cart->quantity;
+                $newQuantity = 0;
+            }     
+
+            Cart::where(["id" => $cart->id])->update(["quantity" => $addedQuantity]);
+            Product::where(["id" => $cart->product])->update(["quantity" => $newQuantity]);
+        }       
+
+        $quantityObj = ["pval" => $newQuantity, "cval" => $addedQuantity];
+
+        return ["status" => "ok", "quantity" => $quantityObj];
 
     }
 
@@ -101,8 +163,16 @@ class CartController extends Controller
         
         $cartDelete = Cart::where([['product', $request->product], ['user', $user->id]]);
 
-        if ($cartDelete)
+        if ($cartDelete) {
+            $c = $cartDelete->first();            
+
+            $p = Product::where(["id" => $c->product]);
+            $quantity = $p->first()->quantity;
+            $newQuantity = $c->quantity + $quantity;
+
+            $p->update(["quantity" => $newQuantity]);
             $cartDelete->delete();
+        }
 
         $pids = [];
 
@@ -112,8 +182,9 @@ class CartController extends Controller
             $pids[] = $c->product;
         }       
 
-        $productsCart = Product::whereIn('id', $pids)->get();        
+        $productsCart = Product::whereIn('id', $pids)->get();   
+        $quantityObj = ["pval" => $newQuantity, "cval" => 0];
 
-        return ["status" => "ok", "cart"=> $productsCart];    
+        return ["status" => "ok", "cart"=> $productsCart, "quantity" => $quantityObj];    
     }
 }

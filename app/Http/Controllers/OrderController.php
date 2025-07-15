@@ -77,12 +77,16 @@ class OrderController extends Controller
             $pids = [];
     
             $carts = Cart::where('user', $user->id)->get();        
-    
+            $number = rand(9000000, 9999999);
+
             foreach($carts as $c) {
                 $order = [
+                    "number" => $number,
                     "name" => $request->order_name,
                     "product" => $c->product,
-                    "comment" => $request->comment
+                    "comment" => $request->comment,
+                    "quantity" => $c->quantity,
+                    "link" -> $c->user
                 ];
                 Order::create($order);         
                 

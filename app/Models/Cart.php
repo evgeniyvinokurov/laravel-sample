@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
-       /** @use HasFactory<\Database\Factories\OrderFactory> */
-       use HasFactory;
     
        /**
        * The table associated with the model.
@@ -22,7 +19,7 @@ class Cart extends Model
         *
         * @var array
         */
-       protected $fillable = ['user', 'product', 'quantity'];
+       protected $fillable = ['user', 'product', 'quantity', 'price'];
        
        
        public function product(): HasMany

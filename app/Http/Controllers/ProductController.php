@@ -38,10 +38,20 @@ class ProductController extends Controller
 
         if (!empty($user)) {
             $carts = Cart::where('user', $user->id)->get();
+            $pcarts = [];
+
             foreach($carts as $c) {
                 $pids[] = $c->product;
+                $pcarts[$c->product] = $c->quantity;
             }                   
-            $productsCart = Product::whereIn('id', $pids)->get();        
+            $productsIn = Product::whereIn('id', $pids)->get(); 
+            $productsCart = [];
+
+            foreach($productsIn as $pc) {
+                $item = $pc;
+                $item["quantity"] = $pcarts[$item->id];
+                $productsCart[] = $pc;
+            }       
             $isAuth = TRUE;
         } else {
             $productsCart = [];
@@ -81,7 +91,8 @@ class ProductController extends Controller
                 "name" => $request->name,
                 "description" => $request->description,
                 "price" => $request->price,
-                "category" => $request->category
+                "category" => $request->category,
+                "quantity" => 10
             ];
             $product = Product::create($product);
             return ["status" => "ok", "product" => $product];

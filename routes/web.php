@@ -15,9 +15,10 @@ use App\Models\User;
  
 Route::get('/', [ProductController::class, 'index']);
 
-Route::post('/cart/add', [CartController::class, 'create']);
-Route::post('/cart/remove', [CartController::class, 'destroy']);
-Route::post('/cart', [CartController::class, 'index']);
+Route::post('/cart/add', [CartController::class, 'create'])->middleware('auth');
+Route::post('/cart/quantity', [CartController::class, 'quantity'])->middleware('auth');
+Route::post('/cart/remove', [CartController::class, 'destroy'])->middleware('auth');
+Route::post('/cart', [CartController::class, 'index'])->middleware('auth');
 
 Route::get('/order/all', [OrderController::class, 'index'])->middleware('auth');
 Route::post('/order/all', [OrderController::class, 'all'])->middleware('auth');

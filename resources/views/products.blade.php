@@ -68,6 +68,15 @@
                 padding: 20px;
                 margin: 10px;
             }
+
+            .quantity {
+                padding-left: 5px;
+                color: black;
+            }
+
+            .product-quantity {
+                padding-left: 10px;
+            }
         </style>
     </body>
 </html>
