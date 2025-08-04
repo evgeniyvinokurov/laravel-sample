@@ -10,12 +10,12 @@
     </head>    
     <body class="products m-20">
         @include('menu')
-
+	<input type="hidden"  class="id"></input>
         @if ($user && $user['admin'] === 'Y')
         <label for="product-view" class="label-product">Product =></label>
         <div id="product-view" class="hide product-selected grid w-60 m-10 border-2 border-solid p-2">
             <input type="text" placeHolder="name" class="name-text"></input>
-            <input type="hidden"  class="id"></input>
+
             <input type="text" placeHolder="description"  class="description-text"></input>
             <select name="category" class="category-select">
                 @foreach ($categories as $cat)  
