@@ -5,6 +5,10 @@
 * profile page - /user  
   
 to setup:  
-   
-- php artisan migrate:refresh --seed
+  
+- copy .env  
+- generate secret key  
+- place empty db  
+- php artisan migrate:refresh --seed  
+- npm run build  
 
